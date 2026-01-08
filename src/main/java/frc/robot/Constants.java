@@ -22,11 +22,18 @@ public class Constants {
   public static final class DriveConsts {
     public static final String SWERVE_STATES_LOG_ENTRY = "Swerve/States";
 
-    public static final String ODOMETRY_GYRO_LOG_ENTRY = "Swerve/Odometry/Gyro";
+    public static final String CANCODER_MODULE_LOG_ENTRY = "Swerve/CanCoders/Module";
+
+    public static final String ODOMETRY_GYRO_LOG_ENTRY = "RealOutputs/Swerve/Odometry/Gyro";
     public static final String ODOMETRY_POSE2D_LOG_ENTRY = "Swerve/Odometry/Pose2d";
 
     public static final String ACTIVE_TRACJECTORY_LOG_ENTRY = "Swerve/Auto/Active Trajectory";
     public static final String TRAJECTORY_SETPOINT_LOG_ENTRY = "Swerve/Auto/Trajectory Setpoint";
+
+    public static final int CANCODER_MODULE1_ID = 10;
+    public static final int CANCODER_MODULE2_ID = 11;
+    public static final int CANCODER_MODULE3_ID = 12;
+    public static final int CANCODER_MODULE4_ID = 13;
 
     public static final double AUTO_TRANSLATION_kP = 0.01;
     public static final double AUTO_TRANSLATION_kI = 0;

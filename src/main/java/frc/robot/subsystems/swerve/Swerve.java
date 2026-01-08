@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerve;
 
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -26,6 +27,7 @@ import frc.robot.subsystems.swerve.IO.GyroIOInputsAutoLogged;
 import frc.robot.subsystems.swerve.IO.PigeonIO;
 import frc.robot.subsystems.swerve.IO.SwerveIO;
 import frc.robot.subsystems.vision.LimelightHelpers;
+
 import java.io.File;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -34,7 +36,6 @@ import org.littletonrobotics.junction.Logger;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
 import swervelib.parser.SwerveParser;
-import swervelib.telemetry.SwerveDriveTelemetry;
 
 public class Swerve extends SubsystemBase implements SwerveIO {
   public static final Lock odometryLock = new ReentrantLock();
@@ -46,6 +47,8 @@ public class Swerve extends SubsystemBase implements SwerveIO {
   private final Pigeon2 pigeon;
   private final PigeonIO pigeonIO;
   private final GyroIOInputsAutoLogged pigeonInputs;
+
+  private final CANcoder[] encoders; // FL FR BL BR
 
   private SwerveModule[] modules;
   private SwerveModuleState state[];
@@ -63,18 +66,25 @@ public class Swerve extends SubsystemBase implements SwerveIO {
     try {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(DriveConsts.MAX_SPEED);
 
-      // Odometry
+      encoders =
+          new CANcoder[] {
+            new CANcoder(DriveConsts.CANCODER_MODULE1_ID),
+            new CANcoder(DriveConsts.CANCODER_MODULE2_ID),
+            new CANcoder(DriveConsts.CANCODER_MODULE3_ID),
+            new CANcoder(DriveConsts.CANCODER_MODULE4_ID)
+          };
+
       pigeon = new Pigeon2(Components.PIGEON2);
       pigeonInputs = new GyroIOInputsAutoLogged();
+      pigeonIO = new PigeonIO();
+
+      setupPathPlanner();
+      SparkOdometryThread.getInstance().start();
 
       kinematics = new SwerveDriveKinematics(DriveConsts.MODULES_TRANSLATION);
       poseEstimator =
           new SwerveDrivePoseEstimator(
               kinematics, getHeading(), swerveDrive.getModulePositions(), new Pose2d());
-
-      SparkOdometryThread.getInstance().start();
-      setupPathPlanner();
-      pigeonIO = new PigeonIO();
 
     } catch (Exception e) {
       throw new RuntimeException("Erro criando Swerve!!!!\n", e);
@@ -98,11 +108,16 @@ public class Swerve extends SubsystemBase implements SwerveIO {
         Logger.recordOutput(DriveConsts.SWERVE_STATES_LOG_ENTRY, state);
       }
 
+      byte i = 0;
+      for (CANcoder encoder : encoders) {
+        i++;
+        Logger.recordOutput(
+            DriveConsts.CANCODER_MODULE_LOG_ENTRY + i, encoder.getAbsolutePosition().getValue());
+      }
+
       Logger.processInputs(DriveConsts.ODOMETRY_GYRO_LOG_ENTRY, pigeonInputs);
       Logger.recordOutput(DriveConsts.ODOMETRY_POSE2D_LOG_ENTRY, getPose());
     }
-
-    SwerveDriveTelemetry.updateData();
   }
 
   @Override

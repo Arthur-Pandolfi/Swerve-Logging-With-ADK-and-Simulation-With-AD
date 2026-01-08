@@ -1,8 +1,6 @@
 package frc.frc_java9485.Autonomous;
 
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,13 +8,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class AutoChooser {
   private final Path autosDir;
   private final Path deployDirectory;
 
   private final List<String> autos;
-  private final SendableChooser<String> chooser;
+  private final LoggedDashboardChooser<String> chooser;
 
   public AutoChooser(String chooserName, String defaultOption) {
     if (chooserName == null) {
@@ -31,8 +30,8 @@ public class AutoChooser {
     autosDir = deployDirectory.resolve("pathplanner/autos");
 
     autos = new ArrayList<>();
-    chooser = new SendableChooser<>();
-    chooser.setDefaultOption(defaultOption, defaultOption);
+    chooser = new LoggedDashboardChooser<>(chooserName);
+    chooser.addDefaultOption(defaultOption, defaultOption);
 
     try (Stream<Path> files = Files.list(autosDir)) {
       files
@@ -46,15 +45,13 @@ public class AutoChooser {
     for (String auto : autos) {
       chooser.addOption(auto, auto);
     }
-
-    SmartDashboard.putData(chooserName, chooser);
   }
 
-  public SendableChooser<String> getChooser() {
+  public LoggedDashboardChooser<String> getChooser() {
     return chooser;
   }
 
   public String getSelectedOption() {
-    return chooser.getSelected();
+    return chooser.get();
   }
 }
