@@ -3,30 +3,30 @@ package frc.frc_java9485.joystick.driver;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public interface DriverJoystickIO {
-    
-    double getLeftY();
 
-    double getLeftX();
-    
-    double getRightX();
-    
-    double getRightY();
+  double getLeftY();
 
-    boolean isTurboMode();
+  double getLeftX();
 
-    boolean isLowMode();
+  double getRightX();
 
-    double getPerfomanceByAlliance(double speed);
+  double getRightY();
 
-    Trigger a();
-    
-    Trigger b();
-    
-    Trigger y();
-    
-    Trigger x();
-    
-    Trigger rightBumper();
-    
-    Trigger leftBumper();
+  boolean isTurboMode();
+
+  boolean isLowMode();
+
+  double getPerfomanceByAlliance(double speed);
+
+  Trigger a();
+
+  Trigger b();
+
+  Trigger y();
+
+  Trigger x();
+
+  Trigger rightBumper();
+
+  Trigger leftBumper();
 }

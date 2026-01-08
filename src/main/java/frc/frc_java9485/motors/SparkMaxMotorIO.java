@@ -3,24 +3,22 @@ package frc.frc_java9485.motors;
 import com.revrobotics.spark.SparkMax;
 
 public interface SparkMaxMotorIO {
-    
-    void setSpeed(double speeds);
 
-    void setPorcentage(double porcentage);
+  void setSpeed(double speeds);
 
-    double getPosition();
+  void setPorcentage(double porcentage);
 
-    double getRate();
+  double getPosition();
 
-    void setReference(double reference);
+  double getRate();
 
-    void setRampRate(double ramp);
+  void setReference(double reference);
 
-    double getVoltage();
+  void setRampRate(double ramp);
 
-    void followMotor(int id);
+  double getVoltage();
 
-    SparkMax getSpark();
+  void followMotor(int id);
 
-
+  SparkMax getSpark();
 }
