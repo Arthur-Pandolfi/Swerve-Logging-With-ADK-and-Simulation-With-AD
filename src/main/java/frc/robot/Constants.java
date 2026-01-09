@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 
@@ -54,6 +56,14 @@ public class Constants {
 
     public static final double MAX_SPEED = 7.0;
     public static final boolean FIELD_ORIENTED = true;
+  }
+
+  public static final class FieldConsts {
+    public static final double FIELD_WIDTH_METERS = 8.21;
+    public static final double FIELD_LENGTH_METERS = 16.54;
+
+    public static final Pose2d BLUE_CENTER_START_POSE =
+        new Pose2d(1.30, 4.105, Rotation2d.fromDegrees(0));
   }
 
   public static final class Joysticks {

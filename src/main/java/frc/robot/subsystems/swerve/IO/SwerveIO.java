@@ -15,6 +15,10 @@ public interface SwerveIO {
 
   public void resetOdometry(Pose2d pose);
 
+  public Pose2d getPoseSim();
+
+  public void resetOdometrySim(Pose2d pose);
+
   public void driveFieldOriented(ChassisSpeeds speed);
 
   public void resetSwerve();

@@ -99,8 +99,6 @@ public class Swerve extends SubsystemBase implements SwerveIO {
 
         driveSimulator = swerveDrive.getMapleSimDrive().get();
         driveSimulator.setEnabled(true);
-
-        resetOdometry(new Pose2d(20, 20, new Rotation2d()));
       }
 
     } catch (Exception e) {
@@ -120,6 +118,14 @@ public class Swerve extends SubsystemBase implements SwerveIO {
       } else {
         Logger.recordOutput(DriveConsts.SWERVE_STATES_LOG_ENTRY, state);
       }
+
+      // var alliance = DriverStation.getAlliance();
+      //   if (alliance.isPresent()) {
+      //     driveSimulator.setSimulationWorldPose(
+      //         alliance.get() == Alliance.Blue
+      //             ? FieldConsts.BLUE_CENTER_START_POSE
+      //             : AllianceFlipUtil.flipToRed(FieldConsts.BLUE_CENTER_START_POSE));
+      //   }
     }
 
     byte i = 0;
@@ -152,6 +158,21 @@ public class Swerve extends SubsystemBase implements SwerveIO {
   }
 
   @Override
+  public void resetOdometry(Pose2d pose) {
+    poseEstimator.resetPose(pose);
+  }
+
+  @Override
+  public Pose2d getPoseSim() {
+    return driveSimulator.getSimulatedDriveTrainPose();
+  }
+
+  @Override
+  public void resetOdometrySim(Pose2d pose) {
+    driveSimulator.setSimulationWorldPose(pose);
+  }
+
+  @Override
   public ChassisSpeeds getRobotRelativeSpeeds() {
     return swerveDrive.getRobotVelocity();
   }
@@ -159,11 +180,6 @@ public class Swerve extends SubsystemBase implements SwerveIO {
   @Override
   public void driveFieldOriented(ChassisSpeeds speed) {
     swerveDrive.driveFieldOriented(speed);
-  }
-
-  @Override
-  public void resetOdometry(Pose2d pose) {
-    poseEstimator.resetPose(pose);
   }
 
   @Override
@@ -223,8 +239,10 @@ public class Swerve extends SubsystemBase implements SwerveIO {
     try {
       config = RobotConfig.fromGUISettings();
       AutoBuilder.configure(
-          this::getPose,
-          this::resetOdometry,
+          Logging.CURRENT_ROBOT_MODE == RobotModes.REAL ? this::getPose : this::getPoseSim,
+          Logging.CURRENT_ROBOT_MODE == RobotModes.REAL
+              ? this::resetOdometry
+              : this::resetOdometrySim,
           this::getRobotRelativeSpeeds,
           (speeds, feedforwards) -> driveFieldOriented(speeds),
           new PPHolonomicDriveController(
