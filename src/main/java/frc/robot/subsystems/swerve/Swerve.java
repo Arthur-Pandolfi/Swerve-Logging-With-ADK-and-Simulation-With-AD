@@ -118,14 +118,6 @@ public class Swerve extends SubsystemBase implements SwerveIO {
       } else {
         Logger.recordOutput(DriveConsts.SWERVE_STATES_LOG_ENTRY, state);
       }
-
-      // var alliance = DriverStation.getAlliance();
-      //   if (alliance.isPresent()) {
-      //     driveSimulator.setSimulationWorldPose(
-      //         alliance.get() == Alliance.Blue
-      //             ? FieldConsts.BLUE_CENTER_START_POSE
-      //             : AllianceFlipUtil.flipToRed(FieldConsts.BLUE_CENTER_START_POSE));
-      //   }
     }
 
     byte i = 0;
