@@ -24,6 +24,7 @@ import frc.frc_java9485.utils.MathUtils;
 import frc.robot.Constants.Components;
 import frc.robot.Constants.DriveConsts;
 import frc.robot.Constants.Logging;
+import frc.robot.Constants.Logging.RobotModes;
 import frc.robot.subsystems.swerve.IO.GyroIOInputsAutoLogged;
 import frc.robot.subsystems.swerve.IO.PigeonIO;
 import frc.robot.subsystems.swerve.IO.SwerveIO;
@@ -32,6 +33,7 @@ import java.io.File;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.DoubleSupplier;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
@@ -52,6 +54,8 @@ public class Swerve extends SubsystemBase implements SwerveIO {
 
   private final CANcoder[] encoders; // FL FR BL BR
 
+  private SwerveDriveSimulation driveSimulator;
+
   private SwerveModule[] modules;
   private SwerveModuleState state[];
 
@@ -68,14 +72,6 @@ public class Swerve extends SubsystemBase implements SwerveIO {
     try {
       SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
       swerveDrive = new SwerveParser(directory).createSwerveDrive(DriveConsts.MAX_SPEED);
-
-      switch (Logging.CURRENT_ROBOT_MODE) {
-        case REAL:
-
-        case SIM:
-          swerveDrive.setHeadingCorrection(false);
-          swerveDrive.setCosineCompensator(false);
-      }
 
       encoders =
           new CANcoder[] {
@@ -97,6 +93,16 @@ public class Swerve extends SubsystemBase implements SwerveIO {
           new SwerveDrivePoseEstimator(
               kinematics, getHeading(), swerveDrive.getModulePositions(), new Pose2d());
 
+      if (Logging.CURRENT_ROBOT_MODE == RobotModes.SIM) {
+        swerveDrive.setHeadingCorrection(false);
+        swerveDrive.setCosineCompensator(false);
+
+        driveSimulator = swerveDrive.getMapleSimDrive().get();
+        driveSimulator.setEnabled(true);
+
+        resetOdometry(new Pose2d(20, 20, new Rotation2d()));
+      }
+
     } catch (Exception e) {
       throw new RuntimeException("Erro criando Swerve!!!!\n", e);
     }
@@ -105,10 +111,6 @@ public class Swerve extends SubsystemBase implements SwerveIO {
   @Override
   public void periodic() {
     if (poseEstimator != null) {
-      odometryLock.lock();
-      pigeonIO.updateInputs(pigeonInputs);
-      odometryLock.unlock();
-
       Pose2d poseEstimated = LimelightHelpers.getBotPose2d("");
       poseEstimator.update(pigeon.getRotation2d(), swerveDrive.getModulePositions());
       poseEstimator.addVisionMeasurement(poseEstimated, Timer.getFPGATimestamp());
@@ -118,16 +120,29 @@ public class Swerve extends SubsystemBase implements SwerveIO {
       } else {
         Logger.recordOutput(DriveConsts.SWERVE_STATES_LOG_ENTRY, state);
       }
+    }
 
-      byte i = 0;
-      for (CANcoder encoder : encoders) {
-        i++;
-        Logger.recordOutput(
-            DriveConsts.CANCODER_MODULE_LOG_ENTRY + i, encoder.getAbsolutePosition().getValue());
-      }
+    byte i = 0;
+    for (CANcoder encoder : encoders) {
+      i++;
+      Logger.recordOutput(
+          DriveConsts.CANCODER_MODULE_LOG_ENTRY + i, encoder.getAbsolutePosition().getValue());
+    }
 
-      Logger.processInputs(DriveConsts.ODOMETRY_GYRO_LOG_ENTRY, pigeonInputs);
-      Logger.recordOutput(DriveConsts.ODOMETRY_POSE2D_LOG_ENTRY, getPose());
+    switch (Logging.CURRENT_ROBOT_MODE) {
+      case SIM:
+        if (driveSimulator != null) {
+          Logger.recordOutput(
+              DriveConsts.ODOMETRY_POSE2D_LOG_ENTRY, driveSimulator.getSimulatedDriveTrainPose());
+        }
+        break;
+      case REAL:
+        odometryLock.lock();
+        pigeonIO.updateInputs(pigeonInputs);
+        odometryLock.unlock();
+        Logger.processInputs(DriveConsts.ODOMETRY_GYRO_LOG_ENTRY, pigeonInputs);
+        Logger.recordOutput(DriveConsts.ODOMETRY_POSE2D_LOG_ENTRY, getPose());
+        break;
     }
   }
 
