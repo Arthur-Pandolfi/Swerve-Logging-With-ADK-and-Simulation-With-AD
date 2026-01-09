@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.frc_java9485.utils.AllianceFlipUtil;
 import frc.robot.Constants.FieldConsts;
 import frc.robot.Constants.Logging;
+import frc.robot.Constants.Logging.RobotModes;
 import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -62,12 +63,14 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
-    var alliance = DriverStation.getAlliance();
-    if (alliance.isPresent()) {
-      swerve.resetOdometrySim(
-          alliance.get() == Alliance.Blue
-              ? FieldConsts.BLUE_CENTER_START_POSE
-              : AllianceFlipUtil.flipToRed(FieldConsts.BLUE_CENTER_START_POSE));
+    if (Logging.CURRENT_ROBOT_MODE == RobotModes.SIM) {
+      var alliance = DriverStation.getAlliance();
+      if (alliance.isPresent()) {
+        swerve.resetOdometrySim(
+            alliance.get() == Alliance.Blue
+                ? FieldConsts.BLUE_CENTER_START_POSE
+                : AllianceFlipUtil.flipToRed(FieldConsts.BLUE_CENTER_START_POSE));
+      }
     }
 
     if (m_autonomousCommand != null) {
