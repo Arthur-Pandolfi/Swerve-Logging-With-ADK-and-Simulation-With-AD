@@ -14,8 +14,7 @@ public class Constants {
 
     public static enum RobotModes {
       SIM,
-      REAL,
-      REPLAY
+      REAL
     }
   }
 

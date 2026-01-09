@@ -23,11 +23,11 @@ import frc.frc_java9485.motors.SparkOdometryThread;
 import frc.frc_java9485.utils.MathUtils;
 import frc.robot.Constants.Components;
 import frc.robot.Constants.DriveConsts;
+import frc.robot.Constants.Logging;
 import frc.robot.subsystems.swerve.IO.GyroIOInputsAutoLogged;
 import frc.robot.subsystems.swerve.IO.PigeonIO;
 import frc.robot.subsystems.swerve.IO.SwerveIO;
 import frc.robot.subsystems.vision.LimelightHelpers;
-
 import java.io.File;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -36,6 +36,8 @@ import org.littletonrobotics.junction.Logger;
 import swervelib.SwerveDrive;
 import swervelib.SwerveModule;
 import swervelib.parser.SwerveParser;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class Swerve extends SubsystemBase implements SwerveIO {
   public static final Lock odometryLock = new ReentrantLock();
@@ -64,7 +66,16 @@ public class Swerve extends SubsystemBase implements SwerveIO {
 
   private Swerve(File directory) {
     try {
+      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
       swerveDrive = new SwerveParser(directory).createSwerveDrive(DriveConsts.MAX_SPEED);
+
+      switch (Logging.CURRENT_ROBOT_MODE) {
+        case REAL:
+
+        case SIM:
+          swerveDrive.setHeadingCorrection(false);
+          swerveDrive.setCosineCompensator(false);
+      }
 
       encoders =
           new CANcoder[] {
