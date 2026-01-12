@@ -48,7 +48,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotPeriodic() {
-    SmartDashboard.putNumber("Match Time", defaultPeriodSecs);
+    SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
     CommandScheduler.getInstance().run();
   }
 
