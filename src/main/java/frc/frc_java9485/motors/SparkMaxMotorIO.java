@@ -12,7 +12,7 @@ public interface SparkMaxMotorIO {
 
   double getRate();
 
-  void setReference(double reference);
+  void setSetpoint(double setpoint);
 
   void setRampRate(double ramp);
 

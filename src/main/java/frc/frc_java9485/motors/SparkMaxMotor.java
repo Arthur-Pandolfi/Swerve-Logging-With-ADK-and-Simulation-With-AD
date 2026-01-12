@@ -1,8 +1,8 @@
 package frc.frc_java9485.motors;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -58,9 +58,9 @@ public class SparkMaxMotor implements SparkMaxMotorIO {
   }
 
   @Override
-  public void setReference(double reference) {
-    if (reference != getPosition()) {
-      motor.getClosedLoopController().setReference(reference, ControlType.kPosition);
+  public void setSetpoint(double setpoint) {
+    if (setpoint != getPosition()) {
+      motor.getClosedLoopController().setSetpoint(setpoint, ControlType.kPosition);
     }
   }
 
@@ -72,7 +72,7 @@ public class SparkMaxMotor implements SparkMaxMotorIO {
       System.out.println("ERRO! o motor não pode mudar se a driverStation estiver ligada");
       return;
     } else {
-      motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+      motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
   }
 
