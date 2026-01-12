@@ -35,15 +35,15 @@ public class DriverJoystick implements DriverJoystickIO {
   public double getLeftY() {
     if (isTurboMode()) {
       return MathUtil.applyDeadband(
-              getPerfomanceByAlliance(joystick.getLeftY()), Joysticks.DEADBAND)
+              getPerfomanceByAlliance(joystick.getLeftY()), Joysticks.DRIVER_DEADBAND)
           * 1;
     } else if (isLowMode()) {
       return MathUtil.applyDeadband(
-              getPerfomanceByAlliance(joystick.getLeftY()), Joysticks.DEADBAND)
+              getPerfomanceByAlliance(joystick.getLeftY()), Joysticks.DRIVER_DEADBAND)
           * 0.2;
     } else {
       return MathUtil.applyDeadband(
-              getPerfomanceByAlliance(joystick.getLeftY()), Joysticks.DEADBAND)
+              getPerfomanceByAlliance(joystick.getLeftY()), Joysticks.DRIVER_DEADBAND)
           * 0.7;
     }
   }
@@ -52,15 +52,15 @@ public class DriverJoystick implements DriverJoystickIO {
   public double getLeftX() {
     if (isTurboMode()) {
       return MathUtil.applyDeadband(
-              getPerfomanceByAlliance(joystick.getLeftX()), Joysticks.DEADBAND)
+              getPerfomanceByAlliance(joystick.getLeftX()), Joysticks.DRIVER_DEADBAND)
           * 1;
     } else if (isLowMode()) {
       return MathUtil.applyDeadband(
-              getPerfomanceByAlliance(joystick.getLeftX()), Joysticks.DEADBAND)
+              getPerfomanceByAlliance(joystick.getLeftX()), Joysticks.DRIVER_DEADBAND)
           * 0.2;
     } else {
       return MathUtil.applyDeadband(
-              getPerfomanceByAlliance(joystick.getLeftX()), Joysticks.DEADBAND)
+              getPerfomanceByAlliance(joystick.getLeftX()), Joysticks.DRIVER_DEADBAND)
           * 0.7;
     }
   }
@@ -69,15 +69,15 @@ public class DriverJoystick implements DriverJoystickIO {
   public double getRightX() {
     if (isTurboMode()) {
       return MathUtil.applyDeadband(
-              getPerfomanceByAlliance(joystick.getRightX()), Joysticks.DEADBAND)
+              getPerfomanceByAlliance(joystick.getRightX()), Joysticks.DRIVER_DEADBAND)
           * 1;
     } else if (isLowMode()) {
       return MathUtil.applyDeadband(
-              getPerfomanceByAlliance(joystick.getRightX()), Joysticks.DEADBAND)
+              getPerfomanceByAlliance(joystick.getRightX()), Joysticks.DRIVER_DEADBAND)
           * 0.2;
     } else {
       return MathUtil.applyDeadband(
-              getPerfomanceByAlliance(joystick.getRightX()), Joysticks.DEADBAND)
+              getPerfomanceByAlliance(joystick.getRightX()), Joysticks.DRIVER_DEADBAND)
           * 0.7;
     }
   }
@@ -86,15 +86,15 @@ public class DriverJoystick implements DriverJoystickIO {
   public double getRightY() {
     if (isTurboMode()) {
       return MathUtil.applyDeadband(
-              getPerfomanceByAlliance(joystick.getRightY()), Joysticks.DEADBAND)
+              getPerfomanceByAlliance(joystick.getRightY()), Joysticks.DRIVER_DEADBAND)
           * 1;
     } else if (isLowMode()) {
       return MathUtil.applyDeadband(
-              getPerfomanceByAlliance(joystick.getRightY()), Joysticks.DEADBAND)
+              getPerfomanceByAlliance(joystick.getRightY()), Joysticks.DRIVER_DEADBAND)
           * 0.2;
     } else {
       return MathUtil.applyDeadband(
-              getPerfomanceByAlliance(joystick.getRightY()), Joysticks.DEADBAND)
+              getPerfomanceByAlliance(joystick.getRightY()), Joysticks.DRIVER_DEADBAND)
           * 0.7;
     }
   }

@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import frc.frc_java9485.utils.AllianceFlipUtil;
 
 public class Constants {
-  public static final class Logging {
+  public static final class RobotConsts {
     public static final RobotModes SIM_MODE = RobotModes.SIM;
     public static final RobotModes CURRENT_ROBOT_MODE =
         RobotBase.isReal() ? RobotModes.REAL : RobotModes.SIM;
@@ -87,9 +87,9 @@ public class Constants {
 
   public static final class Joysticks {
     public static final int DRIVER_PORT = 0;
-    public static final int MECHANISM_PORT = 1;
+    public static final double DRIVER_DEADBAND = 0.1;
 
-    public static final double DEADBAND = 0.1;
+    public static final int MECHANISM_PORT = 1;
   }
 
   public static final class Components {

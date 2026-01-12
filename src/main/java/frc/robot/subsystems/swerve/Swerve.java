@@ -24,8 +24,8 @@ import frc.frc_java9485.utils.MathUtils;
 import frc.robot.Constants.Components;
 import frc.robot.Constants.DriveConsts;
 import frc.robot.Constants.FieldConsts;
-import frc.robot.Constants.Logging;
-import frc.robot.Constants.Logging.RobotModes;
+import frc.robot.Constants.RobotConsts;
+import frc.robot.Constants.RobotConsts.RobotModes;
 import frc.robot.subsystems.swerve.IO.GyroIOInputsAutoLogged;
 import frc.robot.subsystems.swerve.IO.PigeonIO;
 import frc.robot.subsystems.swerve.IO.SwerveIO;
@@ -76,10 +76,10 @@ public class Swerve extends SubsystemBase implements SwerveIO {
 
       encoders =
           new CANcoder[] {
-            new CANcoder(DriveConsts.CANCODER_MODULE1_ID), //FL
-            new CANcoder(DriveConsts.CANCODER_MODULE2_ID), //FR
-            new CANcoder(DriveConsts.CANCODER_MODULE3_ID), //BL
-            new CANcoder(DriveConsts.CANCODER_MODULE4_ID)  //BR
+            new CANcoder(DriveConsts.CANCODER_MODULE1_ID), // FL
+            new CANcoder(DriveConsts.CANCODER_MODULE2_ID), // FR
+            new CANcoder(DriveConsts.CANCODER_MODULE3_ID), // BL
+            new CANcoder(DriveConsts.CANCODER_MODULE4_ID) // BR
           };
 
       pigeon = new Pigeon2(Components.PIGEON2);
@@ -94,7 +94,7 @@ public class Swerve extends SubsystemBase implements SwerveIO {
           new SwerveDrivePoseEstimator(
               kinematics, getHeading(), swerveDrive.getModulePositions(), new Pose2d());
 
-      if (Logging.CURRENT_ROBOT_MODE == RobotModes.SIM) {
+      if (RobotConsts.CURRENT_ROBOT_MODE == RobotModes.SIM) {
         swerveDrive.setHeadingCorrection(false);
         swerveDrive.setCosineCompensator(false);
 
@@ -130,7 +130,7 @@ public class Swerve extends SubsystemBase implements SwerveIO {
           DriveConsts.CANCODER_MODULE_LOG_ENTRY + i, encoder.getAbsolutePosition().getValue());
     }
 
-    switch (Logging.CURRENT_ROBOT_MODE) {
+    switch (RobotConsts.CURRENT_ROBOT_MODE) {
       case SIM:
         if (driveSimulator != null) {
           Logger.recordOutput(
@@ -234,8 +234,8 @@ public class Swerve extends SubsystemBase implements SwerveIO {
     try {
       config = RobotConfig.fromGUISettings();
       AutoBuilder.configure(
-          Logging.CURRENT_ROBOT_MODE == RobotModes.REAL ? this::getPose : this::getPoseSim,
-          Logging.CURRENT_ROBOT_MODE == RobotModes.REAL
+          RobotConsts.CURRENT_ROBOT_MODE == RobotModes.REAL ? this::getPose : this::getPoseSim,
+          RobotConsts.CURRENT_ROBOT_MODE == RobotModes.REAL
               ? this::resetOdometry
               : this::resetOdometrySim,
           this::getRobotRelativeSpeeds,

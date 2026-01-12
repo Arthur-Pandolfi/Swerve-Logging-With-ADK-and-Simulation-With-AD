@@ -18,7 +18,7 @@ import com.revrobotics.spark.SparkBase;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.DriveConsts;
-import frc.robot.Constants.Logging;
+import frc.robot.Constants.RobotConsts;
 import frc.robot.subsystems.swerve.Swerve;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class SparkOdometryThread {
   }
 
   private SparkOdometryThread() {
-    notifier.setName(Logging.SPARK_ODOMETRY_THREAD_PATH);
+    notifier.setName(RobotConsts.SPARK_ODOMETRY_THREAD_PATH);
   }
 
   public void start() {
