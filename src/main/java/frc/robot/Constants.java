@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.frc_java9485.utils.AllianceFlipUtil;
 
 public class Constants {
   public static final class Logging {
@@ -59,11 +60,29 @@ public class Constants {
   }
 
   public static final class FieldConsts {
-    public static final double FIELD_WIDTH_METERS = 8.21;
-    public static final double FIELD_LENGTH_METERS = 16.54;
+    public static final double FIELD_WIDTH_METERS = 8.21; // X
+    public static final double FIELD_LENGTH_METERS = 16.54; // Y
+
+    public static final Pose2d BLUE_LEFT_START_POSE =
+        new Pose2d(3.52, 7.44, Rotation2d.fromDegrees(0));
 
     public static final Pose2d BLUE_CENTER_START_POSE =
-        new Pose2d(1.30, 4.105, Rotation2d.fromDegrees(0));
+        new Pose2d(3.14, 3.96, Rotation2d.fromDegrees(0));
+
+    public static final Pose2d BLUE_RIGHT_START_POSE =
+        new Pose2d(3.54, 0.66, Rotation2d.fromDegrees(0));
+
+    public static final Pose2d RED_LEFT_START_POSE =
+        AllianceFlipUtil.flipToRed(BLUE_LEFT_START_POSE);
+
+    public static final Pose2d RED_CENTER_START_POSE =
+        AllianceFlipUtil.flipToRed(BLUE_CENTER_START_POSE);
+
+    public static final Pose2d RED_RIGHT_START_POSE =
+        AllianceFlipUtil.flipToRed(BLUE_RIGHT_START_POSE);
+
+    public static final Pose2d FIELD_CENTER_POSE =
+        new Pose2d(FIELD_LENGTH_METERS / 2, FIELD_WIDTH_METERS / 2, Rotation2d.fromDegrees(0));
   }
 
   public static final class Joysticks {

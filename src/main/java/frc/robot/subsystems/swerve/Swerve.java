@@ -23,6 +23,7 @@ import frc.frc_java9485.motors.SparkOdometryThread;
 import frc.frc_java9485.utils.MathUtils;
 import frc.robot.Constants.Components;
 import frc.robot.Constants.DriveConsts;
+import frc.robot.Constants.FieldConsts;
 import frc.robot.Constants.Logging;
 import frc.robot.Constants.Logging.RobotModes;
 import frc.robot.subsystems.swerve.IO.GyroIOInputsAutoLogged;
@@ -75,10 +76,10 @@ public class Swerve extends SubsystemBase implements SwerveIO {
 
       encoders =
           new CANcoder[] {
-            new CANcoder(DriveConsts.CANCODER_MODULE1_ID),
-            new CANcoder(DriveConsts.CANCODER_MODULE2_ID),
-            new CANcoder(DriveConsts.CANCODER_MODULE3_ID),
-            new CANcoder(DriveConsts.CANCODER_MODULE4_ID)
+            new CANcoder(DriveConsts.CANCODER_MODULE1_ID), //FL
+            new CANcoder(DriveConsts.CANCODER_MODULE2_ID), //FR
+            new CANcoder(DriveConsts.CANCODER_MODULE3_ID), //BL
+            new CANcoder(DriveConsts.CANCODER_MODULE4_ID)  //BR
           };
 
       pigeon = new Pigeon2(Components.PIGEON2);
@@ -99,6 +100,8 @@ public class Swerve extends SubsystemBase implements SwerveIO {
 
         driveSimulator = swerveDrive.getMapleSimDrive().get();
         driveSimulator.setEnabled(true);
+
+        resetOdometrySim(FieldConsts.FIELD_CENTER_POSE);
       }
 
     } catch (Exception e) {

@@ -2,11 +2,9 @@ package frc.robot;
 
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.frc_java9485.utils.AllianceFlipUtil;
 import frc.robot.Constants.FieldConsts;
 import frc.robot.Constants.Logging;
 import frc.robot.Constants.Logging.RobotModes;
@@ -64,12 +62,32 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopInit() {
     if (Logging.CURRENT_ROBOT_MODE == RobotModes.SIM) {
-      var alliance = DriverStation.getAlliance();
-      if (alliance.isPresent()) {
-        swerve.resetOdometrySim(
-            alliance.get() == Alliance.Blue
-                ? FieldConsts.BLUE_CENTER_START_POSE
-                : AllianceFlipUtil.flipToRed(FieldConsts.BLUE_CENTER_START_POSE));
+      var alliancePosition = DriverStation.getRawAllianceStation();
+
+      switch (alliancePosition) {
+        case Blue1:
+          swerve.resetOdometrySim(FieldConsts.BLUE_LEFT_START_POSE);
+          break;
+        case Blue2:
+          swerve.resetOdometrySim(FieldConsts.BLUE_CENTER_START_POSE);
+          break;
+        case Blue3:
+          swerve.resetOdometrySim(FieldConsts.BLUE_RIGHT_START_POSE);
+          break;
+
+        case Red1:
+          swerve.resetOdometrySim(FieldConsts.RED_LEFT_START_POSE);
+          break;
+        case Red2:
+          swerve.resetOdometrySim(FieldConsts.RED_CENTER_START_POSE);
+          break;
+        case Red3:
+          swerve.resetOdometrySim(FieldConsts.RED_RIGHT_START_POSE);
+          break;
+
+        case Unknown:
+          swerve.resetOdometrySim(FieldConsts.FIELD_CENTER_POSE);
+          break;
       }
     }
 
