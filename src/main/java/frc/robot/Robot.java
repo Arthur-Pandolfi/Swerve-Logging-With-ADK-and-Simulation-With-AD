@@ -1,8 +1,11 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -18,6 +21,8 @@ import org.littletonrobotics.urcl.URCL;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
+
+  private boolean runnedAutonomous;
 
   private final Swerve swerve;
   private final RobotContainer m_robotContainer;
@@ -39,12 +44,17 @@ public class Robot extends LoggedRobot {
 
     m_robotContainer = new RobotContainer();
     swerve = Swerve.getInstance();
+
+    runnedAutonomous = false;
   }
 
   @Override
   public void robotInit() {
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
   }
+
+  Mechanism2d mecnaismo = new Mechanism2d(20, 20);
+  MechanismRoot2d root = mecnaismo.getRoot("Shooter", 10, 10);
 
   @Override
   public void robotPeriodic() {
@@ -54,6 +64,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
+    runnedAutonomous = true;
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -65,32 +76,33 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopInit() {
     if (RobotConsts.CURRENT_ROBOT_MODE == RobotModes.SIM) {
-      var alliancePosition = DriverStation.getRawAllianceStation();
+      if (!runnedAutonomous) {
+        var alliancePosition = DriverStation.getRawAllianceStation();
+        switch (alliancePosition) {
+          case Blue1:
+            swerve.resetOdometrySim(FieldConsts.BLUE_LEFT_START_POSE);
+            break;
+          case Blue2:
+            swerve.resetOdometrySim(FieldConsts.BLUE_CENTER_START_POSE);
+            break;
+          case Blue3:
+            swerve.resetOdometrySim(FieldConsts.BLUE_RIGHT_START_POSE);
+            break;
 
-      switch (alliancePosition) {
-        case Blue1:
-          swerve.resetOdometrySim(FieldConsts.BLUE_LEFT_START_POSE);
-          break;
-        case Blue2:
-          swerve.resetOdometrySim(FieldConsts.BLUE_CENTER_START_POSE);
-          break;
-        case Blue3:
-          swerve.resetOdometrySim(FieldConsts.BLUE_RIGHT_START_POSE);
-          break;
+          case Red1:
+            swerve.resetOdometrySim(FieldConsts.RED_LEFT_START_POSE);
+            break;
+          case Red2:
+            swerve.resetOdometrySim(FieldConsts.RED_CENTER_START_POSE);
+            break;
+          case Red3:
+            swerve.resetOdometrySim(FieldConsts.RED_RIGHT_START_POSE);
+            break;
 
-        case Red1:
-          swerve.resetOdometrySim(FieldConsts.RED_LEFT_START_POSE);
-          break;
-        case Red2:
-          swerve.resetOdometrySim(FieldConsts.RED_CENTER_START_POSE);
-          break;
-        case Red3:
-          swerve.resetOdometrySim(FieldConsts.RED_RIGHT_START_POSE);
-          break;
-
-        case Unknown:
-          swerve.resetOdometrySim(FieldConsts.FIELD_CENTER_POSE);
-          break;
+          case Unknown:
+            swerve.resetOdometrySim(FieldConsts.FIELD_CENTER_POSE);
+            break;
+        }
       }
     }
 
