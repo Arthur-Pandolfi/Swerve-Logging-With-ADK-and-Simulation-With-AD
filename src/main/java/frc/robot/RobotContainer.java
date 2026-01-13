@@ -19,7 +19,7 @@ public class RobotContainer {
     this.swerveSubsystem = Swerve.getInstance();
     this.driverController = DriverJoystick.getInstance();
 
-    autoChooser = new AutoChooser("Autonomous Chooser", "default");
+    autoChooser = new AutoChooser("Autonomous Chooser", "DIREITA");
 
     swerveSubsystem.setDefaultCommand(
         swerveSubsystem.driveCommand(

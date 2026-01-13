@@ -1,7 +1,7 @@
 package frc.frc_java9485.utils;
 
 public class MathUtils {
-  public static boolean inReference(double value, double max, double min) {
+  public static boolean inRange(double value, double max, double min) {
     return value < max && value > min;
   }
 

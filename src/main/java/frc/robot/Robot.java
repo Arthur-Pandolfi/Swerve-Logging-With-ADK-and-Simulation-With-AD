@@ -1,14 +1,16 @@
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.frc_java9485.utils.Elastic;
+import frc.frc_java9485.utils.Elastic.Notification;
+import frc.frc_java9485.utils.Elastic.Notification.NotificationLevel;
 import frc.robot.Constants.FieldConsts;
 import frc.robot.Constants.RobotConsts;
 import frc.robot.Constants.RobotConsts.RobotModes;
@@ -22,7 +24,11 @@ import org.littletonrobotics.urcl.URCL;
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
+  private double currentMatchTime;
   private boolean runnedAutonomous;
+
+  private final Timer timer;
+  private final PowerDistribution powerDistribution;
 
   private final Swerve swerve;
   private final RobotContainer m_robotContainer;
@@ -45,6 +51,10 @@ public class Robot extends LoggedRobot {
     m_robotContainer = new RobotContainer();
     swerve = Swerve.getInstance();
 
+    timer = new Timer();
+    powerDistribution = new PowerDistribution();
+
+    currentMatchTime = 0.00;
     runnedAutonomous = false;
   }
 
@@ -53,28 +63,38 @@ public class Robot extends LoggedRobot {
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
   }
 
-  Mechanism2d mecnaismo = new Mechanism2d(20, 20);
-  MechanismRoot2d root = mecnaismo.getRoot("Shooter", 10, 10);
-
   @Override
   public void robotPeriodic() {
-    SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
     CommandScheduler.getInstance().run();
+    System.out.println(powerDistribution.getVoltage());
+
+    if (powerDistribution.getVoltage() <= 11.4 && timer.advanceIfElapsed(10) && !DriverStation.isFMSAttached()) {
+      String desc = String.format("Bateria com %.2f Volts", powerDistribution.getVoltage());
+      Elastic.sendNotification(new Notification(
+        NotificationLevel.WARNING, "BATERIA BAIXA!!", desc));
+    }
+
+    currentMatchTime = DriverStation.getMatchTime();
+    SmartDashboard.putNumber("Match Time", currentMatchTime);
   }
 
   @Override
   public void autonomousInit() {
+    Elastic.sendNotification(
+        new Notification(NotificationLevel.INFO, "Inicio do Autonomous!!", ""));
+
     runnedAutonomous = true;
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
-      ;
     }
   }
 
   @Override
   public void teleopInit() {
+    Elastic.sendNotification(new Notification(NotificationLevel.INFO, "Inicio do teleop!!", ""));
+
     if (RobotConsts.CURRENT_ROBOT_MODE == RobotModes.SIM) {
       if (!runnedAutonomous) {
         var alliancePosition = DriverStation.getRawAllianceStation();
