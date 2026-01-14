@@ -101,7 +101,7 @@ public class Swerve extends SubsystemBase implements SwerveIO {
         driveSimulator = swerveDrive.getMapleSimDrive().get();
         driveSimulator.setEnabled(true);
 
-        resetOdometrySim(FieldConsts.FIELD_CENTER_POSE);
+        resetOdometrySim(new Pose2d(0,0, Rotation2d.fromDegrees(0)));
       }
 
     } catch (Exception e) {

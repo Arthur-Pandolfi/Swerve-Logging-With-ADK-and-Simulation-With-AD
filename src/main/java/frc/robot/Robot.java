@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.frc_java9485.utils.Elastic;
 import frc.frc_java9485.utils.Elastic.Notification;
 import frc.frc_java9485.utils.Elastic.Notification.NotificationLevel;
+import frc.frc_java9485.utils.Simulation;
 import frc.robot.Constants.FieldConsts;
 import frc.robot.Constants.RobotConsts;
 import frc.robot.Constants.RobotConsts.RobotModes;
@@ -31,6 +32,7 @@ public class Robot extends LoggedRobot {
   private final PowerDistribution powerDistribution;
 
   private final Swerve swerve;
+  private final Simulation simulator;
   private final RobotContainer m_robotContainer;
 
   public Robot() {
@@ -47,6 +49,8 @@ public class Robot extends LoggedRobot {
 
     Logger.registerURCL(URCL.startExternal());
     Logger.start();
+
+    simulator = Simulation.getInstance();
 
     m_robotContainer = new RobotContainer();
     swerve = Swerve.getInstance();
@@ -66,12 +70,13 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    System.out.println(powerDistribution.getVoltage());
 
-    if (powerDistribution.getVoltage() <= 11.4 && timer.advanceIfElapsed(10) && !DriverStation.isFMSAttached()) {
+    if (powerDistribution.getVoltage() <= 11.4
+        && timer.advanceIfElapsed(10)
+        && !DriverStation.isFMSAttached()) {
       String desc = String.format("Bateria com %.2f Volts", powerDistribution.getVoltage());
-      Elastic.sendNotification(new Notification(
-        NotificationLevel.WARNING, "BATERIA BAIXA!!", desc));
+      Elastic.sendNotification(
+          new Notification(NotificationLevel.WARNING, "BATERIA BAIXA!!", desc));
     }
 
     currentMatchTime = DriverStation.getMatchTime();
@@ -120,6 +125,7 @@ public class Robot extends LoggedRobot {
             break;
 
           case Unknown:
+            // swerve.resetOdometrySim(FieldConsts.FIELD_CENTER_POSE);
             swerve.resetOdometrySim(FieldConsts.FIELD_CENTER_POSE);
             break;
         }
@@ -134,5 +140,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    simulator.updateArena();
   }
 }
