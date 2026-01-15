@@ -59,13 +59,12 @@ public class Swerve extends SubsystemBase implements SwerveIO {
   private SwerveModule[] modules;
   private SwerveModuleState state[];
 
-  private static Swerve mInstance;
+  private static Swerve m_instance;
 
   public static Swerve getInstance() {
-    if (mInstance == null) {
-      mInstance = new Swerve(new File(Filesystem.getDeployDirectory(), "swerve"));
-    }
-    return mInstance;
+    if (m_instance == null) 
+      m_instance = new Swerve(new File(Filesystem.getDeployDirectory(), "swerve"));
+    return m_instance;
   }
 
   private Swerve(File directory) {

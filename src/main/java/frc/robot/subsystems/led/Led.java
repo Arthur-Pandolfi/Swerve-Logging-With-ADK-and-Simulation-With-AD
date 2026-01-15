@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Led extends SubsystemBase implements LedIO {
   private LEDPattern pattern;
-  private static Led mInstance = null;
+  private static Led m_instance = null;
 
   private final AddressableLEDBuffer buffer;
   private final AddressableLED addressableLED;
@@ -28,10 +28,8 @@ public class Led extends SubsystemBase implements LedIO {
   }
 
   public static Led getInstance() {
-    if (mInstance == null) {
-      mInstance = new Led();
-    }
-    return mInstance;
+    if (m_instance == null) m_instance = new Led();
+    return m_instance;
   }
 
   @Override
