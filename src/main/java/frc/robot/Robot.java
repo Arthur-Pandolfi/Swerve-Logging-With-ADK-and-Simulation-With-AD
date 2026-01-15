@@ -31,8 +31,8 @@ public class Robot extends LoggedRobot {
   private final Timer timer;
   private final PowerDistribution powerDistribution;
 
+  private Simulation simulator;
   private final Swerve swerve;
-  private final Simulation simulator;
   private final RobotContainer m_robotContainer;
 
   public Robot() {
@@ -43,14 +43,13 @@ public class Robot extends LoggedRobot {
         break;
 
       case SIM:
+        simulator = Simulation.getInstance();
         Logger.addDataReceiver(new NT4Publisher());
         break;
     }
 
     Logger.registerURCL(URCL.startExternal());
     Logger.start();
-
-    simulator = Simulation.getInstance();
 
     m_robotContainer = new RobotContainer();
     swerve = Swerve.getInstance();

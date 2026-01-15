@@ -3,14 +3,7 @@ package frc.frc_java9485.utils;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.FieldConsts;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.littletonrobotics.junction.Logger;
-
-import com.pathplanner.lib.util.FlippingUtil;
-
 import swervelib.simulation.ironmaple.simulation.SimulatedArena;
 import swervelib.simulation.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
 import swervelib.simulation.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnField;
@@ -26,11 +19,11 @@ public class Simulation {
         new Translation2d(0.1, 5.6), new Translation2d(0.1, 5.75), new Translation2d(0.1, 5.9),
         new Translation2d(0.1, 6.05), new Translation2d(0.1, 6.20), new Translation2d(0.1, 6.35),
         new Translation2d(0.254, 5.6), new Translation2d(0.254, 5.75), new Translation2d(0.254, 5.9),
-        new Translation2d(0.254, 6.05), new Translation2d(0.254, 6.20), new Translation2d(0.254, 6.35),
-        new Translation2d(0.408, 5.6), new Translation2d(0.408, 5.75), new Translation2d(0.408, 5.9),
-        new Translation2d(0.408, 6.05), new Translation2d(0.408, 6.20), new Translation2d(0.408, 6.35),
-        new Translation2d(0.512, 5.6), new Translation2d(0.512, 5.75), new Translation2d(0.512, 5.9),
-        new Translation2d(0.512, 6.05), new Translation2d(0.512, 6.20), new Translation2d(0.512, 6.35),
+        new Translation2d(0.254, 6.05), new Translation2d(0.254, 6.20),new Translation2d(0.512, 6.35),
+        new Translation2d(0.254, 6.35), new Translation2d(0.408, 5.6), new Translation2d(0.408, 5.75),
+        new Translation2d(0.408, 5.9), new Translation2d(0.408, 6.05), new Translation2d(0.408, 6.20),
+        new Translation2d(0.408, 6.35), new Translation2d(0.512, 5.6), new Translation2d(0.512, 5.75),
+        new Translation2d(0.512, 5.9), new Translation2d(0.512, 6.05), new Translation2d(0.512, 6.20),
       };
 
   private final RebuiltHub redHub;
@@ -84,39 +77,42 @@ public class Simulation {
   private Translation2d flipFuelToRed(Translation2d translation) {
     translation = AllianceFlip.flipTranslation2dToRed(translation);
     return new Translation2d(
-      translation.getX(),
-      (FieldConsts.FIELD_WIDTH_METERS - 0.122) - translation.getY()
-    );
+        translation.getX(), (FieldConsts.FIELD_WIDTH_METERS - 0.122) - translation.getY());
   }
 
   private void generateMiddleFuels() {
-    int fuelXNumber = 20;
-    int fuelYNumber = 18;
+    Translation2d centerLine =
+        new Translation2d(
+            FieldConsts.FIELD_CENTER_POSE.getX(), FieldConsts.FIELD_CENTER_POSE.getY());
 
-    double startXUp = 9.166;
-    double startYUp = 1.789;
+    Translation2d endTopLeft = new Translation2d(
+      (centerLine.getX() - 0.7935), (FieldConsts.FIELD_WIDTH_METERS / 2) + 2.15);
+    Translation2d startTopLeft = new Translation2d(
+      (centerLine.getX() - 0.7935), (FieldConsts.FIELD_WIDTH_METERS / 2) + 0.0375);
 
-    double startXBottom = 7.415;
-    double startYBottom = 1.812;
-    
-    Translation2d startTopTranslation = new Translation2d(startXUp, startYUp);
-    Translation2d startBottomTranslation = new Translation2d(startXBottom, startYBottom);
+    Translation2d endBottomLeft = new Translation2d(endTopLeft.getX() + 1.65, endTopLeft.getY());
+    Translation2d startBottomLeft = new Translation2d(startTopLeft.getX() + 1.65, startTopLeft.getY());
 
-    Translation2d verticalY = startTopTranslation.minus(startBottomTranslation);
-    verticalY = verticalY.div(verticalY.getNorm()).times(FieldConsts.FUEL_SPACING);
+    int rows = 15;
+    int columns = 12;
+    double spacing = 0.15;
 
-    Translation2d verticalX = new Translation2d(-verticalY.getY(), verticalY.getX());
-    verticalX = verticalX.div(verticalX.getNorm()).times(FieldConsts.FUEL_SPACING);
+    for (int i = 0; i < 2; i++) {
+      for (int x = 0; x < columns; x++) {
+        for (int y = 0; y < rows; y++) {
+          Translation2d position = i == 1 ? new Translation2d(
+              startTopLeft.getX() + (x * spacing),
+              startTopLeft.getY() + (y * spacing)
+          ) : new Translation2d(
+            startTopLeft.getX() + ((x * spacing) - spacing / 2),
+            startTopLeft.getY() + (y * spacing)
+          );
 
-    for (int iX = 0; iX < fuelXNumber; iX++) {
-      for (int iY = 0; iY < fuelYNumber; iY++) {
-
-        Translation2d pos = startBottomTranslation
-            .plus(verticalX.times(iX))
-            .plus(verticalY.times(iY));
-
-        arena.addGamePiece(new RebuiltFuelOnField(pos));
-      }
+          arena.addGamePiece(new RebuiltFuelOnField(
+            i == 1 ? position : flipFuelToRed(position)
+          ));
+        }
+    }
     }
   }
 }

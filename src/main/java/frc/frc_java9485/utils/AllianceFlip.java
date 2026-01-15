@@ -24,8 +24,6 @@ public class AllianceFlip {
 
   public static Translation2d flipTranslation2dToRed(Translation2d blueTranslation) {
     return new Translation2d(
-      FieldConsts.FIELD_LENGTH_METERS - blueTranslation.getX(),
-      blueTranslation.getY()
-    );
+        FieldConsts.FIELD_LENGTH_METERS - blueTranslation.getX(), blueTranslation.getY());
   }
 }

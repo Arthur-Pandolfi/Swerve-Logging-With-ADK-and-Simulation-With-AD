@@ -23,7 +23,6 @@ import frc.frc_java9485.motors.SparkOdometryThread;
 import frc.frc_java9485.utils.MathUtils;
 import frc.robot.Constants.Components;
 import frc.robot.Constants.DriveConsts;
-import frc.robot.Constants.FieldConsts;
 import frc.robot.Constants.RobotConsts;
 import frc.robot.Constants.RobotConsts.RobotModes;
 import frc.robot.subsystems.swerve.IO.GyroIOInputsAutoLogged;
@@ -101,7 +100,7 @@ public class Swerve extends SubsystemBase implements SwerveIO {
         driveSimulator = swerveDrive.getMapleSimDrive().get();
         driveSimulator.setEnabled(true);
 
-        resetOdometrySim(new Pose2d(0,0, Rotation2d.fromDegrees(0)));
+        resetOdometrySim(new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
       }
 
     } catch (Exception e) {
