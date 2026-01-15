@@ -1,7 +1,7 @@
 package frc.frc_java9485.joystick.mechanism;
 
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import frc.robot.Constants.Joysticks;
+import frc.robot.Constants.JoysticksConsts;
 
 public class MechanismJoystick implements MechanismJoystickIO {
   private final CommandJoystick joystick;
@@ -15,6 +15,6 @@ public class MechanismJoystick implements MechanismJoystickIO {
   }
 
   private MechanismJoystick() {
-    joystick = new CommandJoystick(Joysticks.MECHANISM_PORT);
+    joystick = new CommandJoystick(JoysticksConsts.MECHANISM_PORT);
   }
 }

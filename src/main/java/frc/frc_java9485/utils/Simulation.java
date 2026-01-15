@@ -10,7 +10,6 @@ import swervelib.simulation.ironmaple.simulation.seasonspecific.rebuilt2026.Rebu
 import swervelib.simulation.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltHub;
 import swervelib.simulation.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltOutpost;
 
-@SuppressWarnings("unused")
 public class Simulation {
   private static Simulation m_instance;
 
@@ -85,27 +84,21 @@ public class Simulation {
         new Translation2d(
             FieldConsts.FIELD_CENTER_POSE.getX(), FieldConsts.FIELD_CENTER_POSE.getY());
 
-    Translation2d endTopLeft = new Translation2d(
-      (centerLine.getX() - 0.7935), (FieldConsts.FIELD_WIDTH_METERS / 2) + 2.15);
     Translation2d startTopLeft = new Translation2d(
       (centerLine.getX() - 0.7935), (FieldConsts.FIELD_WIDTH_METERS / 2) + 0.0375);
 
-    Translation2d endBottomLeft = new Translation2d(endTopLeft.getX() + 1.65, endTopLeft.getY());
-    Translation2d startBottomLeft = new Translation2d(startTopLeft.getX() + 1.65, startTopLeft.getY());
-
     int rows = 15;
     int columns = 12;
-    double spacing = 0.15;
 
     for (int i = 0; i < 2; i++) {
       for (int x = 0; x < columns; x++) {
         for (int y = 0; y < rows; y++) {
           Translation2d position = i == 1 ? new Translation2d(
-              startTopLeft.getX() + (x * spacing),
-              startTopLeft.getY() + (y * spacing)
+              startTopLeft.getX() + (x * FieldConsts.FUEL_SPACING),
+              startTopLeft.getY() + (y * FieldConsts.FUEL_SPACING)
           ) : new Translation2d(
-            startTopLeft.getX() + ((x * spacing) - spacing / 2),
-            startTopLeft.getY() + (y * spacing)
+            startTopLeft.getX() + ((x * FieldConsts.FUEL_SPACING) - FieldConsts.FUEL_SPACING / 2),
+            startTopLeft.getY() + (y * FieldConsts.FUEL_SPACING)
           );
 
           arena.addGamePiece(new RebuiltFuelOnField(

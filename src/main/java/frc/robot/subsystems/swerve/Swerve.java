@@ -1,45 +1,54 @@
 package frc.robot.subsystems.swerve;
 
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.util.PathPlannerLogging;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import com.ctre.phoenix6.hardware.CANcoder;
+
+import frc.frc_java9485.utils.MathUtils;
+import org.littletonrobotics.junction.Logger;
+import frc.frc_java9485.motors.SparkOdometryThread;
+
+import java.io.File;
+import java.util.concurrent.locks.Lock;
+import java.util.function.DoubleSupplier;
+import java.util.concurrent.locks.ReentrantLock;
+
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.DriverStation;
+
+import frc.robot.Constants.DriveConsts;
+import frc.robot.Constants.RobotConsts;
+import frc.robot.Constants.ComponentsConsts;
+import frc.robot.Constants.RobotConsts.RobotModes;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.frc_java9485.motors.SparkOdometryThread;
-import frc.frc_java9485.utils.MathUtils;
-import frc.robot.Constants.Components;
-import frc.robot.Constants.DriveConsts;
-import frc.robot.Constants.RobotConsts;
-import frc.robot.Constants.RobotConsts.RobotModes;
-import frc.robot.subsystems.swerve.IO.GyroIOInputsAutoLogged;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 import frc.robot.subsystems.swerve.IO.PigeonIO;
 import frc.robot.subsystems.swerve.IO.SwerveIO;
 import frc.robot.subsystems.vision.LimelightHelpers;
-import java.io.File;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.DoubleSupplier;
-import org.littletonrobotics.junction.Logger;
-import swervelib.SwerveDrive;
+import frc.robot.subsystems.swerve.IO.GyroIOInputsAutoLogged;
+
 import swervelib.SwerveModule;
+import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
-import swervelib.simulation.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import swervelib.simulation.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 
 public class Swerve extends SubsystemBase implements SwerveIO {
   public static final Lock odometryLock = new ReentrantLock();
@@ -62,7 +71,7 @@ public class Swerve extends SubsystemBase implements SwerveIO {
   private static Swerve m_instance;
 
   public static Swerve getInstance() {
-    if (m_instance == null) 
+    if (m_instance == null)
       m_instance = new Swerve(new File(Filesystem.getDeployDirectory(), "swerve"));
     return m_instance;
   }
@@ -77,10 +86,10 @@ public class Swerve extends SubsystemBase implements SwerveIO {
             new CANcoder(DriveConsts.CANCODER_MODULE1_ID), // FL
             new CANcoder(DriveConsts.CANCODER_MODULE2_ID), // FR
             new CANcoder(DriveConsts.CANCODER_MODULE3_ID), // BL
-            new CANcoder(DriveConsts.CANCODER_MODULE4_ID) // BR
+            new CANcoder(DriveConsts.CANCODER_MODULE4_ID)  // BR
           };
 
-      pigeon = new Pigeon2(Components.PIGEON2);
+      pigeon = new Pigeon2(ComponentsConsts.PIGEON2);
       pigeonInputs = new GyroIOInputsAutoLogged();
       pigeonIO = new PigeonIO();
 
@@ -173,6 +182,11 @@ public class Swerve extends SubsystemBase implements SwerveIO {
   @Override
   public void driveFieldOriented(ChassisSpeeds speed) {
     swerveDrive.driveFieldOriented(speed);
+  }
+
+  @Override
+  public Pigeon2 getPigeon() {
+    return pigeon;
   }
 
   @Override

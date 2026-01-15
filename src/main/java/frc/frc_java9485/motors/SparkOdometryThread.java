@@ -13,18 +13,20 @@
 
 package frc.frc_java9485.motors;
 
+import java.util.List;
+import java.util.Queue;
+import java.util.ArrayList;
+import java.util.function.DoubleSupplier;
+import java.util.concurrent.ArrayBlockingQueue;
+
+import frc.robot.Constants.DriveConsts;
+import frc.robot.Constants.RobotConsts;
+import frc.robot.subsystems.swerve.Swerve;
+
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-import frc.robot.Constants.DriveConsts;
-import frc.robot.Constants.RobotConsts;
-import frc.robot.subsystems.swerve.Swerve;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.function.DoubleSupplier;
 
 /**
  * Provides an interface for asynchronously reading high-frequency measurements to a set of queues.

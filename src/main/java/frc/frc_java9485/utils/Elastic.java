@@ -1,12 +1,13 @@
 package frc.frc_java9485.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.wpi.first.networktables.NetworkTableInstance;
+
+import edu.wpi.first.networktables.StringTopic;
 import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.StringPublisher;
-import edu.wpi.first.networktables.StringTopic;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 public final class Elastic {
   private static final StringTopic notificationTopic =

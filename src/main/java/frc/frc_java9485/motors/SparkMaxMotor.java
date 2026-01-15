@@ -1,11 +1,11 @@
 package frc.frc_java9485.motors;
 
-import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.PersistMode;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.DriverStation;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class SparkMaxMotor implements SparkMaxMotorIO {
 
@@ -13,8 +13,7 @@ public class SparkMaxMotor implements SparkMaxMotorIO {
   SparkMaxConfig config;
   int id;
   boolean isFollower;
-  String name;
-
+  
   double speed = 0;
   double porcentage = 0;
   double position = 0;
@@ -26,7 +25,6 @@ public class SparkMaxMotor implements SparkMaxMotorIO {
   public SparkMaxMotor(int id, String name, boolean isFollower) {
     this.id = id;
     this.isFollower = isFollower;
-    this.name = name;
     this.motor = new SparkMax(id, SparkMax.MotorType.kBrushless);
     this.config = new SparkMaxConfig();
   }

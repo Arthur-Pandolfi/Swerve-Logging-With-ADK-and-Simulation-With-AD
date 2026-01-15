@@ -1,13 +1,13 @@
 package frc.frc_java9485.Autonomous;
 
-import edu.wpi.first.wpilibj.Filesystem;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.util.List;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 import java.util.stream.Stream;
+import edu.wpi.first.wpilibj.Filesystem;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class AutoChooser {

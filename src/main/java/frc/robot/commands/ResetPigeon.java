@@ -1,29 +1,23 @@
 package frc.robot.commands;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.Components;
 import frc.robot.subsystems.swerve.Swerve;
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class ResetPigeon extends Command {
 
-  Pigeon2 pigeon2;
-  Swerve swerveSubsystem;
+  Swerve swerve;
 
   public ResetPigeon() {
-    this.pigeon2 = new Pigeon2(Components.PIGEON2);
-    this.swerveSubsystem = Swerve.getInstance();
-    addRequirements(swerveSubsystem);
+    swerve = Swerve.getInstance();
+    addRequirements(swerve);
   }
 
   @Override
-  public void initialize() {
-    System.out.println("resetando o pigeon");
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
-    swerveSubsystem.resetSwerve();
+    swerve.resetSwerve();
   }
 
   @Override
@@ -31,6 +25,6 @@ public class ResetPigeon extends Command {
 
   @Override
   public boolean isFinished() {
-    return pigeon2.getYaw().getValueAsDouble() == 0;
+    return swerve.getHeading().getDegrees() == 0;
   }
 }

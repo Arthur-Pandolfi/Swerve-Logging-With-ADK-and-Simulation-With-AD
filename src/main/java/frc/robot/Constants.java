@@ -1,12 +1,25 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.RobotBase;
+
 import frc.frc_java9485.utils.AllianceFlip;
 
 public class Constants {
+  public static final class JoysticksConsts {
+    public static final int DRIVER_PORT = 0;
+    public static final double DRIVER_DEADBAND = 0.1;
+
+    public static final int MECHANISM_PORT = 1;
+  }
+
+  public static final class ComponentsConsts {
+    public static final int PIGEON2 = 9;
+    public static final String LIMELIGHT = "limelight";
+  }
+
   public static final class RobotConsts {
     public static final RobotModes SIM_MODE = RobotModes.SIM;
     public static final RobotModes CURRENT_ROBOT_MODE =
@@ -19,6 +32,10 @@ public class Constants {
       SIM,
       REAL
     }
+  }
+
+  public static final class IntakeConsts {
+    
   }
 
   public static final class DriveConsts {
@@ -87,17 +104,5 @@ public class Constants {
 
     public static final Pose2d FIELD_CENTER_POSE =
         new Pose2d(FIELD_LENGTH_METERS / 2, FIELD_WIDTH_METERS / 2, Rotation2d.fromDegrees(0));
-  }
-
-  public static final class Joysticks {
-    public static final int DRIVER_PORT = 0;
-    public static final double DRIVER_DEADBAND = 0.1;
-
-    public static final int MECHANISM_PORT = 1;
-  }
-
-  public static final class Components {
-    public static final int PIGEON2 = 9;
-    public static final String LIMELIGHT = "limelight";
   }
 }

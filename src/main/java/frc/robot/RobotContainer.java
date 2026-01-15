@@ -2,10 +2,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.frc_java9485.Autonomous.AutoChooser;
-import frc.frc_java9485.joystick.driver.DriverJoystick;
+
 import frc.robot.Constants.DriveConsts;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.frc_java9485.Autonomous.AutoChooser;
+import frc.frc_java9485.joystick.driver.DriverJoystick;
 
 public class RobotContainer {
   private final Swerve swerveSubsystem;
