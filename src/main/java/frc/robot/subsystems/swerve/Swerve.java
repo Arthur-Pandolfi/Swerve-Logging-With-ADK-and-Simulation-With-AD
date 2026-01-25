@@ -1,54 +1,46 @@
 package frc.robot.subsystems.swerve;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.CANcoder;
-
-import frc.frc_java9485.utils.MathUtils;
-import org.littletonrobotics.junction.Logger;
-import frc.frc_java9485.motors.SparkOdometryThread;
-
-import java.io.File;
-import java.util.concurrent.locks.Lock;
-import java.util.function.DoubleSupplier;
-import java.util.concurrent.locks.ReentrantLock;
-
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.DriverStation;
-
-import frc.robot.Constants.DriveConsts;
-import frc.robot.Constants.RobotConsts;
-import frc.robot.Constants.ComponentsConsts;
-import frc.robot.Constants.RobotConsts.RobotModes;
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.PathPlannerLogging;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.util.PathPlannerLogging;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.frc_java9485.constants.ComponentsConsts;
+import frc.frc_java9485.constants.DriveConsts;
+import frc.frc_java9485.constants.RobotConsts;
+import frc.frc_java9485.constants.RobotConsts.RobotModes;
+import frc.frc_java9485.motors.spark.SparkOdometryThread;
+import frc.frc_java9485.utils.MathUtils;
+import frc.robot.subsystems.swerve.IO.GyroIOInputsAutoLogged;
 import frc.robot.subsystems.swerve.IO.PigeonIO;
 import frc.robot.subsystems.swerve.IO.SwerveIO;
+import frc.robot.subsystems.swerve.IO.SwerveInputsAutoLogged;
 import frc.robot.subsystems.vision.LimelightHelpers;
-import frc.robot.subsystems.swerve.IO.GyroIOInputsAutoLogged;
-
-import swervelib.SwerveModule;
+import java.io.File;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 import swervelib.SwerveDrive;
+import swervelib.SwerveModule;
 import swervelib.parser.SwerveParser;
+import swervelib.simulation.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
-import swervelib.simulation.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 
 public class Swerve extends SubsystemBase implements SwerveIO {
   public static final Lock odometryLock = new ReentrantLock();
@@ -59,6 +51,7 @@ public class Swerve extends SubsystemBase implements SwerveIO {
 
   private final Pigeon2 pigeon;
   private final PigeonIO pigeonIO;
+  private final SwerveInputsAutoLogged swerveInputs;
   private final GyroIOInputsAutoLogged pigeonInputs;
 
   private final CANcoder[] encoders; // FL FR BL BR
@@ -68,25 +61,27 @@ public class Swerve extends SubsystemBase implements SwerveIO {
   private SwerveModule[] modules;
   private SwerveModuleState state[];
 
-  private static Swerve m_instance;
+  private static Swerve mInstance;
 
   public static Swerve getInstance() {
-    if (m_instance == null)
-      m_instance = new Swerve(new File(Filesystem.getDeployDirectory(), "swerve"));
-    return m_instance;
+    if (mInstance == null) {
+      mInstance = new Swerve(new File(Filesystem.getDeployDirectory(), "swerve"));
+    }
+    return mInstance;
   }
 
   private Swerve(File directory) {
     try {
       SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
       swerveDrive = new SwerveParser(directory).createSwerveDrive(DriveConsts.MAX_SPEED);
+      swerveInputs = new SwerveInputsAutoLogged();
 
       encoders =
           new CANcoder[] {
             new CANcoder(DriveConsts.CANCODER_MODULE1_ID), // FL
             new CANcoder(DriveConsts.CANCODER_MODULE2_ID), // FR
-            new CANcoder(DriveConsts.CANCODER_MODULE3_ID), // BL
-            new CANcoder(DriveConsts.CANCODER_MODULE4_ID)  // BR
+            new CANcoder(DriveConsts.CANCODER_MODULE3_ID), // BR
+            new CANcoder(DriveConsts.CANCODER_MODULE4_ID) // BL
           };
 
       pigeon = new Pigeon2(ComponentsConsts.PIGEON2);
@@ -152,6 +147,8 @@ public class Swerve extends SubsystemBase implements SwerveIO {
         Logger.recordOutput(DriveConsts.ODOMETRY_POSE2D_LOG_ENTRY, getPose());
         break;
     }
+    updateInputs(swerveInputs);
+    Logger.processInputs("Swerve", swerveInputs);
   }
 
   @Override
@@ -187,12 +184,6 @@ public class Swerve extends SubsystemBase implements SwerveIO {
   @Override
   public Pigeon2 getPigeon() {
     return pigeon;
-  }
-
-  @Override
-  public void resetSwerve() {
-    pigeon.reset();
-    swerveDrive.zeroGyro();
   }
 
   @Override
@@ -287,5 +278,12 @@ public class Swerve extends SubsystemBase implements SwerveIO {
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
+  }
+
+  @Override
+  public void updateInputs(SwerveInputs inputs) {
+      inputs.currentPose = RobotConsts.CURRENT_ROBOT_MODE == RobotModes.SIM ? getPoseSim() : getPose();
+      inputs.currentSpeed = getRobotRelativeSpeeds();
+      inputs.heading = getHeading();
   }
 }

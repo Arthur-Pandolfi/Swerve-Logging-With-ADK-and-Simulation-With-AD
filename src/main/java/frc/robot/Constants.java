@@ -35,7 +35,7 @@ public class Constants {
   }
 
   public static final class IntakeConsts {
-    
+    public static final int INTAKE_SPARK_ID = 0;
   }
 
   public static final class DriveConsts {

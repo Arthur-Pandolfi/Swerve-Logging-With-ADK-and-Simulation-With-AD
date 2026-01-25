@@ -3,7 +3,6 @@ package frc.frc_java9485.joystick.driver;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public interface DriverJoystickIO {
-
   double getLeftY();
 
   double getLeftX();
@@ -29,4 +28,6 @@ public interface DriverJoystickIO {
   Trigger rightBumper();
 
   Trigger leftBumper();
+
+  Trigger getLeftBack();
 }

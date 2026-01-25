@@ -1,32 +1,37 @@
-package frc.frc_java9485.motors;
+package frc.frc_java9485.motors.spark;
 
-import com.revrobotics.ResetMode;
 import com.revrobotics.PersistMode;
-import com.revrobotics.spark.SparkMax;
-import edu.wpi.first.wpilibj.DriverStation;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.config.SparkFlexConfig;
 
-public class SparkMaxMotor implements SparkMaxMotorIO {
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DriverStation;
 
-  SparkMax motor;
-  SparkMaxConfig config;
+public class SparkFlexMotor implements SparkMotorIO {
+
+  SparkFlex motor;
+  SparkFlexConfig config;
   int id;
   boolean isFollower;
-  
+  String name;
+
   double speed = 0;
   double porcentage = 0;
   double position = 0;
 
-  public SparkMaxMotor(int id, String name) {
+  public SparkFlexMotor(int id, String name) {
     this(id, name, false);
   }
 
-  public SparkMaxMotor(int id, String name, boolean isFollower) {
+  public SparkFlexMotor(int id, String name, boolean isFollower) {
     this.id = id;
     this.isFollower = isFollower;
-    this.motor = new SparkMax(id, SparkMax.MotorType.kBrushless);
-    this.config = new SparkMaxConfig();
+    this.name = name;
+    this.motor = new SparkFlex(id, SparkFlex.MotorType.kBrushless);
+    this.config = new SparkFlexConfig();
   }
 
   @Override
@@ -79,9 +84,13 @@ public class SparkMaxMotor implements SparkMaxMotorIO {
     return motor.getBusVoltage();
   }
 
-  @Override
-  public SparkMax getSpark() {
+  public SparkFlex getSpark() {
     return motor;
+  }
+
+  @Override
+  public RelativeEncoder getEncoder() {
+    return motor.getEncoder();
   }
 
   @Override
@@ -90,5 +99,20 @@ public class SparkMaxMotor implements SparkMaxMotorIO {
       config.follow(id);
     }
     motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+  }
+
+  @Override
+  public void setVoltage(double voltage) {
+    motor.setVoltage(voltage);
+  }
+
+  @Override
+  public void setVoltage(Voltage voltage) {
+    motor.setVoltage(voltage);
+  }
+
+  @Override
+  public double getTemperature() {
+      return motor.getMotorTemperature();
   }
 }

@@ -2,7 +2,8 @@ package frc.frc_java9485.utils;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.Constants.FieldConsts;
+import frc.frc_java9485.constants.FieldConsts;
+
 import org.littletonrobotics.junction.Logger;
 import swervelib.simulation.ironmaple.simulation.SimulatedArena;
 import swervelib.simulation.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
@@ -17,12 +18,18 @@ public class Simulation {
       new Translation2d[] {
         new Translation2d(0.1, 5.6), new Translation2d(0.1, 5.75), new Translation2d(0.1, 5.9),
         new Translation2d(0.1, 6.05), new Translation2d(0.1, 6.20), new Translation2d(0.1, 6.35),
-        new Translation2d(0.254, 5.6), new Translation2d(0.254, 5.75), new Translation2d(0.254, 5.9),
-        new Translation2d(0.254, 6.05), new Translation2d(0.254, 6.20),new Translation2d(0.512, 6.35),
-        new Translation2d(0.254, 6.35), new Translation2d(0.408, 5.6), new Translation2d(0.408, 5.75),
-        new Translation2d(0.408, 5.9), new Translation2d(0.408, 6.05), new Translation2d(0.408, 6.20),
-        new Translation2d(0.408, 6.35), new Translation2d(0.512, 5.6), new Translation2d(0.512, 5.75),
-        new Translation2d(0.512, 5.9), new Translation2d(0.512, 6.05), new Translation2d(0.512, 6.20),
+        new Translation2d(0.254, 5.6), new Translation2d(0.254, 5.75),
+            new Translation2d(0.254, 5.9),
+        new Translation2d(0.254, 6.05), new Translation2d(0.254, 6.20),
+            new Translation2d(0.512, 6.35),
+        new Translation2d(0.254, 6.35), new Translation2d(0.408, 5.6),
+            new Translation2d(0.408, 5.75),
+        new Translation2d(0.408, 5.9), new Translation2d(0.408, 6.05),
+            new Translation2d(0.408, 6.20),
+        new Translation2d(0.408, 6.35), new Translation2d(0.512, 5.6),
+            new Translation2d(0.512, 5.75),
+        new Translation2d(0.512, 5.9), new Translation2d(0.512, 6.05),
+            new Translation2d(0.512, 6.20),
       };
 
   private final RebuiltHub redHub;
@@ -84,8 +91,9 @@ public class Simulation {
         new Translation2d(
             FieldConsts.FIELD_CENTER_POSE.getX(), FieldConsts.FIELD_CENTER_POSE.getY());
 
-    Translation2d startTopLeft = new Translation2d(
-      (centerLine.getX() - 0.7935), (FieldConsts.FIELD_WIDTH_METERS / 2) + 0.0375);
+    Translation2d startTopLeft =
+        new Translation2d(
+            (centerLine.getX() - 0.7935), (FieldConsts.FIELD_WIDTH_METERS / 2) + 0.0375);
 
     int rows = 15;
     int columns = 12;
@@ -93,19 +101,19 @@ public class Simulation {
     for (int i = 0; i < 2; i++) {
       for (int x = 0; x < columns; x++) {
         for (int y = 0; y < rows; y++) {
-          Translation2d position = i == 1 ? new Translation2d(
-              startTopLeft.getX() + (x * FieldConsts.FUEL_SPACING),
-              startTopLeft.getY() + (y * FieldConsts.FUEL_SPACING)
-          ) : new Translation2d(
-            startTopLeft.getX() + ((x * FieldConsts.FUEL_SPACING) - FieldConsts.FUEL_SPACING / 2),
-            startTopLeft.getY() + (y * FieldConsts.FUEL_SPACING)
-          );
+          Translation2d position =
+              i == 1
+                  ? new Translation2d(
+                      startTopLeft.getX() + (x * FieldConsts.FUEL_SPACING),
+                      startTopLeft.getY() + (y * FieldConsts.FUEL_SPACING))
+                  : new Translation2d(
+                      startTopLeft.getX()
+                          + ((x * FieldConsts.FUEL_SPACING) - FieldConsts.FUEL_SPACING / 2),
+                      startTopLeft.getY() + (y * FieldConsts.FUEL_SPACING));
 
-          arena.addGamePiece(new RebuiltFuelOnField(
-            i == 1 ? position : flipFuelToRed(position)
-          ));
+          arena.addGamePiece(new RebuiltFuelOnField(i == 1 ? position : flipFuelToRed(position)));
         }
-    }
+      }
     }
   }
 }

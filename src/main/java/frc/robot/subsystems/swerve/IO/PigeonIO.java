@@ -1,18 +1,16 @@
 package frc.robot.subsystems.swerve.IO;
 
-import java.util.Queue;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
-
-import frc.robot.Constants.DriveConsts;
-import frc.robot.Constants.ComponentsConsts;
-import frc.frc_java9485.motors.SparkOdometryThread;
-
+import com.ctre.phoenix6.hardware.Pigeon2;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
+import frc.frc_java9485.constants.ComponentsConsts;
+import frc.frc_java9485.constants.DriveConsts;
+import frc.frc_java9485.motors.spark.SparkOdometryThread;
+import java.util.Queue;
 
 public class PigeonIO implements GyroIO {
   private final Pigeon2 pigeon = new Pigeon2(ComponentsConsts.PIGEON2);

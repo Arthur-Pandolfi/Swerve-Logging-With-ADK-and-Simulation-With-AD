@@ -1,14 +1,22 @@
 package frc.robot.subsystems.swerve.IO;
 
-import java.util.function.DoubleSupplier;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj2.command.Command;
+import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
+import org.littletonrobotics.junction.AutoLog;
 
 public interface SwerveIO {
+  @AutoLog
+  public static class SwerveInputs{
+    public Pose2d currentPose = new Pose2d();
+    public Rotation2d heading = new Rotation2d();
+    public ChassisSpeeds currentSpeed = new ChassisSpeeds();
+  }
+
   public Pose2d getPose();
 
   public Rotation2d getHeading();
@@ -23,12 +31,12 @@ public interface SwerveIO {
 
   public void driveFieldOriented(ChassisSpeeds speed);
 
-  public void resetSwerve();
-
   public Pigeon2 getPigeon();
 
   public Command getAutonomousCommand(String path, boolean altern);
 
   public Command driveCommand(
       DoubleSupplier x, DoubleSupplier y, DoubleSupplier omega, boolean fieldOriented);
+
+  public void updateInputs(SwerveInputs inputs);
 }
